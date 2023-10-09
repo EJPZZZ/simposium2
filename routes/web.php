@@ -29,6 +29,5 @@ Route::get('/confirmation', function () {
 
 Route::get('/mailable', function () {
 	$attendee = Attendee::find(1);
-
 	return new AttendeeRegistrationDone($attendee);
 });

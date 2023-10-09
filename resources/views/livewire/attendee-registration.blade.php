@@ -67,7 +67,8 @@
 			<span class="text-sm text-red-600">{{ $message }}</span>
 			@enderror
 		</div>
-		<button type="submit"
+		<button wire:loading.remove type="submit"
 			class="bg-neutral-50 px-6 py-4 rounded-lg w-full mt-8 text-neutral-900 text-xl font-semibold hover:bg-neutral-300 transition-all duration-200 shadow-sm shadow-neutral-50">Registrarse</button>
+			<div wire:loading class="text-2xl text-center w-full mt-6">Registrando</div>
 	</form>
 </div>
