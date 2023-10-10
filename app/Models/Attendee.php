@@ -11,6 +11,7 @@ class Attendee extends Model
     use HasFactory;
 
 		protected $fillable = [
+			'curp',
 			'name',
 			'email',
 			'phone_number',

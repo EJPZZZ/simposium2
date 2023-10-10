@@ -4,17 +4,27 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\AttendeeResource\Pages;
 use App\Filament\Resources\AttendeeResource\RelationManagers;
+use App\Mail\AttendeeCertificatesMail;
+use App\Mail\AttendeeRegistrationDone;
 use App\Models\Attendee;
 use Filament\Forms;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
+use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Actions\BulkAction;
+use Filament\Tables\Actions\BulkActionGroup;
+use Filament\Tables\Actions\DeleteBulkAction;
+use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 
 class AttendeeResource extends Resource
 {
@@ -94,12 +104,36 @@ class AttendeeResource extends Resource
 				//
 			])
 			->actions([
-				Tables\Actions\EditAction::make(),
+				EditAction::make(),
 			])
 			->bulkActions([
-				Tables\Actions\BulkActionGroup::make([
-					Tables\Actions\DeleteBulkAction::make(),
-				]),
+				BulkActionGroup::make([
+					DeleteBulkAction::make(),
+				])
+					->label('Acciones'),
+				BulkActionGroup::make([
+					BulkAction::make('Enviar certificados')
+						->icon('heroicon-m-paper-airplane')
+						->requiresConfirmation()
+						->action(function (Collection $records) {
+							$records->each(function ($record) {
+								$token = DB::table('attendee_certificate_tokens')
+								->where('email', '=', $record->email)
+								->select('token')
+								->pluck('token')
+								->toArray();
+
+								Mail::to($record->email)->send(new AttendeeCertificatesMail($token[0]));
+							});
+
+							Notification::make()
+								->title('Correos de certificados enviados')
+								->success()
+								->send();
+						})
+						->deselectRecordsAfterCompletion(),
+				])
+					->label('Certificados')
 			]);
 	}
 

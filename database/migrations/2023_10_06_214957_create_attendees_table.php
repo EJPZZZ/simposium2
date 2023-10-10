@@ -13,13 +13,14 @@ return new class extends Migration
 	{
 		Schema::create('attendees', function (Blueprint $table) {
 			$table->id();
-			$table->string('code')->unique();
+			$table->string('curp')->unique();
+			$table->string('code')->nullable()->unique();
 			$table->string('name');
 			$table->string('email')->unique();
 			$table->string('phone_number')->unique();
-			$table->integer('semester')->max(13);
-			$table->foreignId('career_id')->constrained('careers')->cascadeOnDelete();
-			$table->foreignId('workshop_id')->constrained('workshops')->cascadeOnDelete();
+			$table->integer('semester')->max(13)->nullable();
+			$table->foreignId('career_id')->nullable()->constrained('careers')->cascadeOnDelete();
+			$table->foreignId('workshop_id')->nullable()->constrained('workshops')->cascadeOnDelete();
 			$table->timestamps();
 		});
 	}

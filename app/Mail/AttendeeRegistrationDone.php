@@ -27,7 +27,7 @@ class AttendeeRegistrationDone extends Mailable
 	public function envelope(): Envelope
 	{
 		return new Envelope(
-			subject: 'Confirmamos tu registro al SRI',
+			subject: 'Simposium Regional de Informática - Confirmamos tu registro al evento',
 		);
 	}
 

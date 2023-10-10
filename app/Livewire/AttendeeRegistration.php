@@ -11,6 +11,8 @@ class AttendeeRegistration extends Component
 {
 	public AttendeeForm $form;
 
+	// public $internal_attendee = 'external';
+
 	public $careers = [];
 
 	public $workshops = [];
@@ -19,6 +21,7 @@ class AttendeeRegistration extends Component
 	{
 		$this->careers = Career::select('name')->get()->toArray();
 		$this->workshops = Workshop::select('name')->get()->toArray();
+		$this->form->type = 'external';
 	}
 
 	public function save()

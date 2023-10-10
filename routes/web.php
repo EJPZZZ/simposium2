@@ -1,5 +1,6 @@
 <?php
 
+use App\Mail\AttendeeCertificatesMail;
 use App\Mail\AttendeeRegistrationDone;
 use App\Models\Attendee;
 use Illuminate\Support\Facades\Route;
@@ -23,11 +24,27 @@ Route::get('/registration', function () {
 	return view('registration');
 })->name('registration');
 
-Route::get('/confirmation', function () {
-	return view('confirmation');
+Route::get('/confirmation/{token}', function ($token) {
+	return view('confirmation', [
+		'token' => $token
+	]);
 })->name('confirmation');
 
 Route::get('/mailable', function () {
 	$attendee = Attendee::find(1);
 	return new AttendeeRegistrationDone($attendee);
 });
+
+Route::get('/certificate_mailable/{token}', function($token) {
+	return new AttendeeCertificatesMail($token);
+});
+
+Route::get('/workshop_certificate/{token}', function($token){
+	return 'taller';
+})->name('certificate.workshop');
+
+Route::get('/event_certificate/{token}', function($token){
+	return 'evento';
+})->name('certificate.event');
+
+
