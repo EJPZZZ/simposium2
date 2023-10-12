@@ -6,11 +6,9 @@ use App\Mail\AttendeeRegistrationDone;
 use App\Models\Attendee;
 use App\Models\Career;
 use App\Models\Workshop;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Livewire\Attributes\Rule;
 use Livewire\Form;
-use Illuminate\Support\Str;
 
 class AttendeeForm extends Form
 {
@@ -43,8 +41,14 @@ class AttendeeForm extends Form
 
 	public $semester = '';
 
-	#[Rule('required', as: 'tipo')]
+	#[Rule('required|in:internal,external', as: 'tipo')]
 	public $type = '';
+
+	#[Rule('required|in:male,female,not_especified|string', as: 'género')]
+	public $gender = '';
+
+	#[Rule('required|mimes:jpg,jpeg,png|max:2048', as: 'recibo de pago')]
+	public $image_file;
 
 	public function store()
 	{
@@ -52,23 +56,26 @@ class AttendeeForm extends Form
 			'curp' => $this->curp,
 			'name' => $this->name,
 			'email' => $this->email,
-			'code' => $this->code ?? null,
+			'code' => $this->code ?: null,
 			'phone_number' => $this->phone_number,
-			'semester' => ($this->semester == '') ?? 0,
+			'semester' => $this->semester ?: null,
+			'gender' => $this->gender,
 			'career_id' => (Career::where('name', $this->career)->first()->id) ?? null,
 			'workshop_id' => Workshop::where('name', $this->workshop)->first()->id,
 		]);
 
+		$path = $this->image_file->store('payment_images');
+		
+		$attendee->image()->create([
+			'path' => $path,
+		]);
+
 		Mail::to($attendee->email)->send(new AttendeeRegistrationDone($attendee));
 
-		DB::table('attendee_certificate_tokens')
-			->insert([
-				'email' => $this->email,
-				'token' => Str::random(64),
-				'created_at' => now(),
-				'updated_at' => now(),
-			]);
+		$token = $attendee->create_certificate_token();
 
 		$this->reset();
+
+		return $token;
 	}
 }

@@ -5,7 +5,6 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\AttendeeResource\Pages;
 use App\Filament\Resources\AttendeeResource\RelationManagers;
 use App\Mail\AttendeeCertificatesMail;
-use App\Mail\AttendeeRegistrationDone;
 use App\Models\Attendee;
 use Filament\Forms;
 use Filament\Forms\Components\Select;
@@ -14,16 +13,20 @@ use Filament\Forms\Form;
 use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Actions\Action;
 use Filament\Tables\Actions\BulkAction;
 use Filament\Tables\Actions\BulkActionGroup;
 use Filament\Tables\Actions\DeleteBulkAction;
 use Filament\Tables\Actions\EditAction;
+use Filament\Tables\Columns\CheckboxColumn;
+use Filament\Tables\Columns\IconColumn;
+use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 
 class AttendeeResource extends Resource
@@ -76,26 +79,50 @@ class AttendeeResource extends Resource
 	{
 		return $table
 			->columns([
-				TextColumn::make('code')
-					->label('Matrícula')
+				TextColumn::make('curp')
+					->label('CURP')
 					->searchable(),
 				TextColumn::make('name')
 					->label('Nombre')
-					->searchable(),
-				TextColumn::make('career.name')
-					->label('Carrera')
-					->sortable(),
-				TextColumn::make('workshop.name')
-					->label('Taller')
+					->searchable()
 					->sortable(),
 				TextColumn::make('email')
 					->label('Correo Electrónico')
 					->searchable(),
+				TextColumn::make('workshop.name')
+					->label('Taller')
+					->sortable(),
+				TextColumn::make('code')
+					->label('Matrícula')
+					->searchable()
+					->toggleable(isToggledHiddenByDefault: true),
+				TextColumn::make('career.name')
+					->label('Carrera')
+					->sortable()
+					->toggleable(isToggledHiddenByDefault: true),
+				TextColumn::make('gender')
+					->label('Género')
+					->toggleable(isToggledHiddenByDefault: true),
+				IconColumn::make('validated')
+					->label('Validado')
+					->sortable()
+					->boolean(),
+				TextColumn::make('validated_at')
+					->label('Fecha validación')
+					->dateTime()
+					->sortable()
+					->toggleable(isToggledHiddenByDefault: true),
+				TextColumn::make('validated_by')
+					->label('Validado por')
+					->sortable()
+					->toggleable(isToggledHiddenByDefault: true),
 				TextColumn::make('created_at')
+					->label('Fecha registro')
 					->dateTime()
 					->sortable()
 					->toggleable(isToggledHiddenByDefault: true),
 				TextColumn::make('updated_at')
+					->label('Fecha actualización')
 					->dateTime()
 					->sortable()
 					->toggleable(isToggledHiddenByDefault: true),
@@ -104,26 +131,29 @@ class AttendeeResource extends Resource
 				//
 			])
 			->actions([
+				Action::make('Ver recibo')
+					->icon('heroicon-m-photo')
+					->modalContent(fn(Attendee $record): View => view('components.filament.image-modal', [
+						'record' => $record
+					]))
+					->modalSubmitAction(false),
+					// ->url(fn (Attendee $record): string => url($record->image->path))
+					// ->openUrlInNewTab(),
 				EditAction::make(),
 			])
 			->bulkActions([
 				BulkActionGroup::make([
 					DeleteBulkAction::make(),
-				])
-					->label('Acciones'),
+				])->label('Acciones'),
 				BulkActionGroup::make([
 					BulkAction::make('Enviar certificados')
 						->icon('heroicon-m-paper-airplane')
 						->requiresConfirmation()
 						->action(function (Collection $records) {
 							$records->each(function ($record) {
-								$token = DB::table('attendee_certificate_tokens')
-								->where('email', '=', $record->email)
-								->select('token')
-								->pluck('token')
-								->toArray();
+								$token = $record->get_certificate_token();
 
-								Mail::to($record->email)->send(new AttendeeCertificatesMail($token[0]));
+								Mail::to($record->email)->send(new AttendeeCertificatesMail($token));
 							});
 
 							Notification::make()
@@ -132,8 +162,7 @@ class AttendeeResource extends Resource
 								->send();
 						})
 						->deselectRecordsAfterCompletion(),
-				])
-					->label('Certificados')
+				])->label('Certificados')
 			]);
 	}
 

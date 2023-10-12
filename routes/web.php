@@ -1,9 +1,12 @@
 <?php
 
+use App\Http\Controllers\CertificateController;
 use App\Mail\AttendeeCertificatesMail;
 use App\Mail\AttendeeRegistrationDone;
 use App\Models\Attendee;
+use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Storage;
 
 /*
 |--------------------------------------------------------------------------
@@ -18,7 +21,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
 	return view('welcome');
-});
+})->name('home');
 
 Route::get('/registration', function () {
 	return view('registration');
@@ -35,16 +38,31 @@ Route::get('/mailable', function () {
 	return new AttendeeRegistrationDone($attendee);
 });
 
-Route::get('/certificate_mailable/{token}', function($token) {
+Route::get('/certificate_mailable/{token}', function ($token) {
 	return new AttendeeCertificatesMail($token);
 });
 
-Route::get('/workshop_certificate/{token}', function($token){
-	return 'taller';
-})->name('certificate.workshop');
+Route::get('/workshop_certificate/{token}', [CertificateController::class, 'workshop'])->name('certificate.workshop');
 
-Route::get('/event_certificate/{token}', function($token){
+Route::get('/event_certificate/{token}', function ($token) {
 	return 'evento';
 })->name('certificate.event');
 
+Route::get('/payment_images/{image}', function ($image) {
 
+	$file = Storage::get('/payment_images/' . $image);
+
+	if (!(bool) $file) {
+		abort(404);
+	}
+
+	$type = Storage::mimeType('/payment_images/' . $image);
+
+	$response = Response::make($file, 200);
+
+	$response->header("Content-Type", $type);
+
+	return $response;
+
+	return $file;
+})->middleware('auth');

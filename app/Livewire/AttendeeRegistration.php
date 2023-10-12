@@ -6,12 +6,13 @@ use App\Livewire\Forms\AttendeeForm;
 use App\Models\Career;
 use App\Models\Workshop;
 use Livewire\Component;
+use Livewire\Features\SupportFileUploads\WithFileUploads;
 
 class AttendeeRegistration extends Component
 {
-	public AttendeeForm $form;
+	use WithFileUploads;
 
-	// public $internal_attendee = 'external';
+	public AttendeeForm $form;
 
 	public $careers = [];
 
@@ -21,16 +22,15 @@ class AttendeeRegistration extends Component
 	{
 		$this->careers = Career::select('name')->get()->toArray();
 		$this->workshops = Workshop::select('name')->get()->toArray();
-		$this->form->type = 'external';
 	}
 
 	public function save()
 	{
 		$this->validate();
 
-		$this->form->store();
+		$token = $this->form->store();
 
-		return $this->redirect('/confirmation');
+		return $this->redirect('/confirmation/'.$token);
 	}
 
 	public function render()

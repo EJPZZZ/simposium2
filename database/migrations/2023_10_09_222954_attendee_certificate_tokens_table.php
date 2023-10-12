@@ -14,8 +14,10 @@ return new class extends Migration
 		Schema::create('attendee_certificate_tokens', function (Blueprint $table) {
 			$table->string('email')->primary();
 			$table->string('token', 64)->unique();
+			$table->integer('used_times');
 			$table->timestamp('last_used_at')->nullable();
-			$table->timestamps();
+			$table->timestamp('expires_at')->nullable();
+			$table->timestamp('created_at');
 		});
 	}
 

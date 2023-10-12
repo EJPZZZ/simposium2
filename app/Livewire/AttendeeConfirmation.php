@@ -15,20 +15,11 @@ class AttendeeConfirmation extends Component
 
 	public function mount()
 	{
-		$email = DB::table('attendee_certificate_tokens')
-			->where('token', '=', $this->token)
-			->select('email')
-			->pluck('email')
-			->toArray();
-
-		if ($email == null) {
+		if (!(bool) $email = Attendee::get_email_from_token($this->token)) {
 			return false;
-		}
-		
-		$attendee = Attendee::where('email', $email)
-			->first();
+		};
 
-		if ($attendee) {
+		if ($attendee = Attendee::where('email', $email)->first()) {
 			$this->attendee_name = $attendee->name;
 			$this->workshop_name = $attendee->workshop->name;
 		}
