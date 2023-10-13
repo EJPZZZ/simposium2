@@ -30,7 +30,7 @@ class AttendeeRegistration extends Component
 
 		$token = $this->form->store();
 
-		return $this->redirect('/confirmation/'.$token);
+		return $this->redirect('/confirmation/'.$token, navigate: true);
 	}
 
 	public function render()

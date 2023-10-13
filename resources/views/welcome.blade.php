@@ -12,7 +12,7 @@
 				<img class="w-96 mt-20 ml-12" src="{{ asset('storage/images/Logo-TecNM-blanco.png') }}" alt="logo-tecnm">
 			</div>
 			<div class="flex items-center justify-end">
-				<a href="{{ route('registration') }}"
+				<a wire:navigate href="{{ route('registration') }}"
 					class="bg-zinc-800 px-8 py-4 rounded-full mr-20 text-2xl text-orange-100 shadow-md cursor-pointer hover:opacity-80 transition-all duration-200">Registrarse</a>
 			</div>
 		</div>

@@ -17,7 +17,7 @@ return new class extends Migration
 			$table->string('code')->nullable()->unique();
 			$table->string('name');
 			$table->string('email')->unique();
-			$table->string('phone_number')->unique();
+			$table->string('phone_number')->nullable()->unique();
 			$table->integer('semester')->max(13)->nullable();
 			$table->string('gender');
 			$table->foreignId('career_id')->nullable()->constrained('careers')->cascadeOnDelete();

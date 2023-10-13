@@ -7,6 +7,7 @@ use App\Filament\Resources\AttendeeResource\RelationManagers;
 use App\Mail\AttendeeCertificatesMail;
 use App\Models\Attendee;
 use Filament\Forms;
+use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
@@ -28,6 +29,7 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Storage;
 
 class AttendeeResource extends Resource
 {
@@ -49,28 +51,49 @@ class AttendeeResource extends Resource
 	{
 		return $form
 			->schema([
-				TextInput::make('code')
+				TextInput::make('curp')
 					->required()
-					->maxLength(6),
-				Select::make('career_id')
-					->relationship(name: 'career', titleAttribute: 'name')
-					->required(),
-				Select::make('workshop_id')
-					->relationship(name: 'workshop', titleAttribute: 'name')
-					->required(),
+					->maxLength(18)
+					->label('CURP'),
 				TextInput::make('name')
 					->required()
-					->maxLength(255),
+					->maxLength(255)
+					->label('Nombre'),
 				TextInput::make('email')
 					->email()
 					->required()
-					->maxLength(255),
-				TextInput::make('phone_number')
-					->maxLength(10),
+					->maxLength(255)
+					->label('Correo electrónico'),
+				Select::make('workshop_id')
+					->relationship(name: 'workshop', titleAttribute: 'name')
+					->required()
+					->label('Taller'),
+				TextInput::make('code')
+					->maxLength(6)
+					->label('Matrícula'),
+				Select::make('career_id')
+					->relationship(name: 'career', titleAttribute: 'name')
+					->label('Carrera'),
 				TextInput::make('semester')
 					->numeric()
 					->minValue(1)
-					->maxValue(13),
+					->maxValue(13)
+					->label('Semestre'),
+				TextInput::make('phone_number')
+					->maxLength(10)
+					->label('Número telefónico'),
+				Select::make('gender')
+				->options([
+					'female' => 'Femenino',
+					'male' => 'Masculino',
+					'not_especified' => 'No especificado'
+				])
+				->label('Género'),
+				DateTimePicker::make('created_at')
+				->format('Y-m-d H:i')
+				->seconds(false)
+				->disabled()
+				->label('Fecha de registro'),
 			])
 			->columns(3);
 	}
@@ -103,10 +126,9 @@ class AttendeeResource extends Resource
 				TextColumn::make('gender')
 					->label('Género')
 					->toggleable(isToggledHiddenByDefault: true),
-				IconColumn::make('validated')
+				CheckboxColumn::make('validated')
 					->label('Validado')
-					->sortable()
-					->boolean(),
+					->sortable(),
 				TextColumn::make('validated_at')
 					->label('Fecha validación')
 					->dateTime()
@@ -133,17 +155,27 @@ class AttendeeResource extends Resource
 			->actions([
 				Action::make('Ver recibo')
 					->icon('heroicon-m-photo')
-					->modalContent(fn(Attendee $record): View => view('components.filament.image-modal', [
+					->modalContent(fn (Attendee $record): View => view('components.filament.image-modal', [
 						'record' => $record
 					]))
 					->modalSubmitAction(false),
-					// ->url(fn (Attendee $record): string => url($record->image->path))
-					// ->openUrlInNewTab(),
+				// ->url(fn (Attendee $record): string => url($record->image->path))
+				// ->openUrlInNewTab(),
 				EditAction::make(),
 			])
 			->bulkActions([
 				BulkActionGroup::make([
-					DeleteBulkAction::make(),
+					BulkAction::make('Eliminar seleccionados')
+					->icon('heroicon-m-trash')
+					->color('danger')
+					->requiresConfirmation()
+					->action(function (Collection $records){
+						$records->each(function ($record){
+							Storage::delete($record->image->path);
+							$record->delete();
+						});
+					})
+					->deselectRecordsAfterCompletion(),
 				])->label('Acciones'),
 				BulkActionGroup::make([
 					BulkAction::make('Enviar certificados')

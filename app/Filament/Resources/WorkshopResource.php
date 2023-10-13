@@ -39,15 +39,18 @@ class WorkshopResource extends Resource
 			->schema([
 				TextInput::make('name')
 					->required()
-					->maxLength(255),
+					->maxLength(255)
+					->label('Nombre'),
 				TextInput::make('capacity')
 					->numeric()
 					->required()
 					->minValue(1)
-					->maxValue(50),
+					->maxValue(50)
+					->label('Capacidad'),
 				TextInput::make('location')
 					->required()
 					->maxLength(255)
+					->label('Localización')
 			]);
 	}
 
@@ -56,9 +59,12 @@ class WorkshopResource extends Resource
 		return $table
 			->columns([
 				TextColumn::make('name')
-					->searchable(),
-				TextColumn::make('capacity'),
-				TextColumn::make('location'),
+					->searchable()
+					->label('Nombre'),
+				TextColumn::make('capacity')
+					->label('Capacidad'),
+				TextColumn::make('location')
+					->label('Localización'),
 			])
 			->filters([
 				//

@@ -36,6 +36,7 @@ class CareerResource extends Resource
 		return $form
 			->schema([
 				Forms\Components\TextInput::make('name')
+					->label('Nombre')
 					->required()
 					->maxLength(255),
 			]);
@@ -46,7 +47,8 @@ class CareerResource extends Resource
 		return $table
 			->columns([
 				Tables\Columns\TextColumn::make('name')
-					->searchable(),
+					->searchable()
+					->label('Nombre'),
 				Tables\Columns\TextColumn::make('created_at')
 					->dateTime()
 					->sortable()

@@ -45,7 +45,6 @@ class Attendee extends Model
 				'email' => $this->email,
 				'token' => $token,
 				'created_at' => now(),
-				'used_times' => 0,
 			]);
 
 		return $token;

@@ -21,7 +21,7 @@ class AttendeeForm extends Form
 	#[Rule('string|max:255|email:filter|unique:attendees,email|required',	as: 'correo electrónico')]
 	public $email = '';
 
-	#[Rule('string|max:10|required|unique:attendees,phone_number',	as: 'número telefónico')]
+	#[Rule('string|max:10|nullable|unique:attendees,phone_number',	as: 'número telefónico')]
 	public $phone_number = '';
 
 	#[Rule('exists:workshops,name|required',	as: 'taller')]
@@ -64,13 +64,16 @@ class AttendeeForm extends Form
 			'workshop_id' => Workshop::where('name', $this->workshop)->first()->id,
 		]);
 
-		$path = $this->image_file->store('payment_images');
-		
-		$attendee->image()->create([
-			'path' => $path,
-		]);
+		$path = $this->image_file
+			->store('payment_images');
 
-		Mail::to($attendee->email)->send(new AttendeeRegistrationDone($attendee));
+		$attendee->image()
+			->create([
+				'path' => $path,
+			]);
+
+		Mail::to($attendee->email)
+			->send(new AttendeeRegistrationDone($attendee));
 
 		$token = $attendee->create_certificate_token();
 
