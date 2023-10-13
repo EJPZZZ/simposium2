@@ -81,6 +81,14 @@ class Attendee extends Model
 			]);
 	}
 
+	public function set_token_allowed_date(string $date): void
+	{
+		DB::table('attendee_certificate_tokens')
+			->update([
+				'allowed_date' => $date
+			]);
+	}
+
 	// public function add_payment_image(string $path)
 	// {
 

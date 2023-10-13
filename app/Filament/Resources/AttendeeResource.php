@@ -102,19 +102,6 @@ class AttendeeResource extends Resource
 	public static function table(Table $table): Table
 	{
 		return $table
-			// ->headerActions([
-			// 	BulkAction::make('Fecha de expiración')
-			// 		->icon('heroicon-m-trash')
-			// 		->color('danger')
-			// 		->requiresConfirmation()
-			// 		->action(function (Collection $records) {
-			// 			$records->each(function ($record) {
-			// 				Storage::delete($record->image->path);
-			// 				$record->delete();
-			// 			});
-			// 		})
-			// 		->deselectRecordsAfterCompletion(),
-			// ])
 			->columns([
 				TextColumn::make('curp')
 					->label('CURP')
@@ -173,8 +160,6 @@ class AttendeeResource extends Resource
 						'record' => $record
 					]))
 					->modalSubmitAction(false),
-				// ->url(fn (Attendee $record): string => url($record->image->path))
-				// ->openUrlInNewTab(),
 				EditAction::make(),
 			])
 			->bulkActions([
@@ -188,6 +173,11 @@ class AttendeeResource extends Resource
 								Storage::delete($record->image->path);
 								$record->delete();
 							});
+
+							Notification::make()
+								->title('Registros eliminados')
+								->success()
+								->send();
 						})
 						->deselectRecordsAfterCompletion(),
 				])->label('Abrir acciones'),
@@ -207,6 +197,25 @@ class AttendeeResource extends Resource
 								->send();
 						})
 						->deselectRecordsAfterCompletion(),
+					BulkAction::make('Fecha de emisión')
+						->icon('heroicon-m-calendar')
+						->form([
+							DatePicker::make('allowed_date')
+								->label('Fecha de permiso para los links')
+								->required(),
+						])
+						->action(function (array $data, Collection $records) {
+							foreach ($records as $record) {
+								$record->set_token_allowed_date($data['allowed_date']);
+							}
+
+							Notification::make()
+								->title('Fecha cambiada')
+								->success()
+								->send();
+						})
+						->modalWidth('md')
+						->deselectRecordsAfterCompletion(),
 					BulkAction::make('Fecha de expiración')
 						->icon('heroicon-m-calendar')
 						->form([
@@ -218,6 +227,11 @@ class AttendeeResource extends Resource
 							foreach ($records as $record) {
 								$record->set_token_expiration_date($data['expires_at']);
 							}
+
+							Notification::make()
+								->title('Fecha cambiada')
+								->success()
+								->send();
 						})
 						->modalWidth('md')
 						->deselectRecordsAfterCompletion(),

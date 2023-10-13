@@ -3,6 +3,7 @@
 namespace App\Livewire;
 
 use App\Livewire\Forms\AttendeeForm;
+use App\Models\Attendee;
 use App\Models\Career;
 use App\Models\Workshop;
 use Livewire\Component;
@@ -20,8 +21,16 @@ class AttendeeRegistration extends Component
 
 	public function mount()
 	{
-		$this->careers = Career::select('name')->get()->toArray();
-		$this->workshops = Workshop::select('name')->get()->toArray();
+		$this->careers = Career::select('name')
+			->get()
+			->toArray();
+
+		$this->workshops = Workshop::select('id', 'name', 'capacity')
+			->get()
+			->filter(function ($workshop) {
+				if (Attendee::where('workshop_id', $workshop->id)->count() < $workshop->capacity) return $workshop;
+			})
+			->toArray();
 	}
 
 	public function save()
@@ -30,7 +39,7 @@ class AttendeeRegistration extends Component
 
 		$token = $this->form->store();
 
-		return $this->redirect('/confirmation/'.$token, navigate: true);
+		return $this->redirect('/confirmation/' . $token, navigate: true);
 	}
 
 	public function render()

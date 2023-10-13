@@ -18,7 +18,7 @@ return new class extends Migration
 				->on('attendees')
 				->cascadeOnDelete();
 			$table->string('token', 32)->unique();
-			$table->timestamp('allowed_after')->nullable();
+			$table->timestamp('allowed_date')->nullable();
 			$table->integer('allowed_times')->default(5);
 			$table->timestamp('last_used_at')->nullable();
 			$table->timestamp('expires_at')->nullable();
