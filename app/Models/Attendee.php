@@ -36,9 +36,14 @@ class Attendee extends Model
 		return $this->belongsTo(Workshop::class);
 	}
 
+	public function image(): HasOne
+	{
+		return $this->hasOne(Image::class);
+	}
+
 	public function create_certificate_token(): string
 	{
-		$token = Str::random(64);
+		$token = Str::random(32);
 
 		DB::table('attendee_certificate_tokens')
 			->insert([
@@ -53,12 +58,12 @@ class Attendee extends Model
 	public function get_certificate_token(): string
 	{
 		return DB::table('attendee_certificate_tokens')
-		->where('email', '=', $this->email)
-		->select('token')
-		->pluck('token')
-		->toArray()[0];
+			->where('email', '=', $this->email)
+			->select('token')
+			->pluck('token')
+			->toArray()[0];
 	}
-	
+
 	public static function get_email_from_token(String $token): array
 	{
 		return DB::table('attendee_certificate_tokens')
@@ -68,9 +73,12 @@ class Attendee extends Model
 			->toArray();
 	}
 
-	public function image(): HasOne
+	public function set_token_expiration_date(string $date): void
 	{
-		return $this->hasOne(Image::class);
+		DB::table('attendee_certificate_tokens')
+			->update([
+				'expires_at' => $date
+			]);
 	}
 
 	// public function add_payment_image(string $path)

@@ -7,6 +7,7 @@ use App\Filament\Resources\AttendeeResource\RelationManagers;
 use App\Mail\AttendeeCertificatesMail;
 use App\Models\Attendee;
 use Filament\Forms;
+use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -83,17 +84,17 @@ class AttendeeResource extends Resource
 					->maxLength(10)
 					->label('Número telefónico'),
 				Select::make('gender')
-				->options([
-					'female' => 'Femenino',
-					'male' => 'Masculino',
-					'not_especified' => 'No especificado'
-				])
-				->label('Género'),
+					->options([
+						'female' => 'Femenino',
+						'male' => 'Masculino',
+						'not_especified' => 'No especificado'
+					])
+					->label('Género'),
 				DateTimePicker::make('created_at')
-				->format('Y-m-d H:i')
-				->seconds(false)
-				->disabled()
-				->label('Fecha de registro'),
+					->format('Y-m-d H:i')
+					->seconds(false)
+					->disabled()
+					->label('Fecha de registro'),
 			])
 			->columns(3);
 	}
@@ -101,6 +102,19 @@ class AttendeeResource extends Resource
 	public static function table(Table $table): Table
 	{
 		return $table
+			// ->headerActions([
+			// 	BulkAction::make('Fecha de expiración')
+			// 		->icon('heroicon-m-trash')
+			// 		->color('danger')
+			// 		->requiresConfirmation()
+			// 		->action(function (Collection $records) {
+			// 			$records->each(function ($record) {
+			// 				Storage::delete($record->image->path);
+			// 				$record->delete();
+			// 			});
+			// 		})
+			// 		->deselectRecordsAfterCompletion(),
+			// ])
 			->columns([
 				TextColumn::make('curp')
 					->label('CURP')
@@ -166,17 +180,17 @@ class AttendeeResource extends Resource
 			->bulkActions([
 				BulkActionGroup::make([
 					BulkAction::make('Eliminar seleccionados')
-					->icon('heroicon-m-trash')
-					->color('danger')
-					->requiresConfirmation()
-					->action(function (Collection $records){
-						$records->each(function ($record){
-							Storage::delete($record->image->path);
-							$record->delete();
-						});
-					})
-					->deselectRecordsAfterCompletion(),
-				])->label('Acciones'),
+						->icon('heroicon-m-trash')
+						->color('danger')
+						->requiresConfirmation()
+						->action(function (Collection $records) {
+							$records->each(function ($record) {
+								Storage::delete($record->image->path);
+								$record->delete();
+							});
+						})
+						->deselectRecordsAfterCompletion(),
+				])->label('Abrir acciones'),
 				BulkActionGroup::make([
 					BulkAction::make('Enviar certificados')
 						->icon('heroicon-m-paper-airplane')
@@ -184,7 +198,6 @@ class AttendeeResource extends Resource
 						->action(function (Collection $records) {
 							$records->each(function ($record) {
 								$token = $record->get_certificate_token();
-
 								Mail::to($record->email)->send(new AttendeeCertificatesMail($token));
 							});
 
@@ -193,6 +206,20 @@ class AttendeeResource extends Resource
 								->success()
 								->send();
 						})
+						->deselectRecordsAfterCompletion(),
+					BulkAction::make('Fecha de expiración')
+						->icon('heroicon-m-calendar')
+						->form([
+							DatePicker::make('expires_at')
+								->label('Fecha de expiración de links')
+								->required(),
+						])
+						->action(function (array $data, Collection $records) {
+							foreach ($records as $record) {
+								$record->set_token_expiration_date($data['expires_at']);
+							}
+						})
+						->modalWidth('md')
 						->deselectRecordsAfterCompletion(),
 				])->label('Certificados')
 			]);
