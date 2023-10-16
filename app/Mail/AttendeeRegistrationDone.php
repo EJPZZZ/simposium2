@@ -6,9 +6,11 @@ use App\Models\Attendee;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
+use Illuminate\Mail\Mailables\Attachment;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class AttendeeRegistrationDone extends Mailable
 {
@@ -42,6 +44,7 @@ class AttendeeRegistrationDone extends Mailable
 				'attendeeName' => $this->attendee->name,
 				'attendeeWorkshop' => $this->attendee->workshop->name,
 				'workshopLocation' => $this->attendee->workshop->location,
+				'attendeeToken' => $this->attendee->get_certificate_token(),
 			]
 		);
 	}
@@ -53,6 +56,9 @@ class AttendeeRegistrationDone extends Mailable
 	 */
 	public function attachments(): array
 	{
-		return [];
+		return [
+			// Attachment::fromData(fn () => QrCode::format('png')->size(200)->generate($this->attendee->get_certificate_token()), 'qrcode.png')
+			// ->withMime('image/png')
+		];
 	}
 }

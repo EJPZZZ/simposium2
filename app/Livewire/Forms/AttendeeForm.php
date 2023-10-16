@@ -72,11 +72,11 @@ class AttendeeForm extends Form
 				'path' => $path,
 			]);
 
-		Mail::to($attendee->email)
-			->send(new AttendeeRegistrationDone($attendee));
-
 		$token = $attendee->create_certificate_token();
 
+		Mail::to($attendee->email)
+			->send(new AttendeeRegistrationDone($attendee));
+			
 		$this->reset();
 
 		return $token;

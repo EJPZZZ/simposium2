@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -87,6 +88,34 @@ class Attendee extends Model
 			->update([
 				'allowed_date' => $date
 			]);
+	}
+
+	public static function verify_token(string $token)
+	{
+		// try {
+		// 	DB::table('attendee_certificate_tokens')
+		// 		->where('token', '=', $token)
+		// 		->select('email')
+		// 		->pluck('email')
+		// 		->toArray()[0];
+		// } catch (\Throwable $th) {
+		// 	abort(404);
+		// }
+
+		try {
+			$allowed_date = DB::table('attendee_certificate_tokens')
+				->where('token', '=', $token)
+				->select('allowed_date')
+				->pluck('allowed_date')
+				->toArray()[0];
+
+			$formated_date = Carbon::createFromFormat('Y-m-d H:i:s', $allowed_date);
+			
+			if($formated_date->gt(Carbon::now())) return abort(404);
+
+		} catch (\Throwable $th) {
+			abort(404);
+		}
 	}
 
 	// public function add_payment_image(string $path)
