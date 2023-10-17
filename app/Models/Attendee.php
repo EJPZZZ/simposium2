@@ -92,35 +92,18 @@ class Attendee extends Model
 
 	public static function verify_token(string $token)
 	{
-		// try {
-		// 	DB::table('attendee_certificate_tokens')
-		// 		->where('token', '=', $token)
-		// 		->select('email')
-		// 		->pluck('email')
-		// 		->toArray()[0];
-		// } catch (\Throwable $th) {
-		// 	abort(404);
-		// }
-
 		try {
-			$allowed_date = DB::table('attendee_certificate_tokens')
+			$attendee_data = DB::table('attendee_certificate_tokens')
 				->where('token', '=', $token)
-				->select('allowed_date')
-				->pluck('allowed_date')
-				->toArray()[0];
+				->select('allowed_date', 'email')
+				->first();
 
-			$formated_date = Carbon::createFromFormat('Y-m-d H:i:s', $allowed_date);
-			
-			if($formated_date->gt(Carbon::now())) return abort(404);
+			$formated_date = Carbon::createFromFormat('Y-m-d H:i:s', $attendee_data->allowed_date);
 
+			if ($formated_date->gt(Carbon::now())) abort(404);
+			return $attendee_data->email;
 		} catch (\Throwable $th) {
 			abort(404);
 		}
 	}
-
-	// public function add_payment_image(string $path)
-	// {
-
-	// }
-
 }

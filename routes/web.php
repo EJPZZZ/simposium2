@@ -1,14 +1,12 @@
 <?php
 
 use App\Http\Controllers\CertificateController;
-use App\Http\Controllers\QrController;
 use App\Mail\AttendeeCertificatesMail;
 use App\Mail\AttendeeRegistrationDone;
 use App\Models\Attendee;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
-use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 /*
 |--------------------------------------------------------------------------
@@ -23,7 +21,8 @@ use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 Route::get('/', function () {
 	return view('welcome');
-})->name('home');
+})
+	->name('home');
 
 Route::get('/registration', function () {
 	return view('registration');
@@ -33,20 +32,26 @@ Route::get('/confirmation/{token}', function ($token) {
 	return view('confirmation', [
 		'token' => $token
 	]);
-})->name('confirmation');
+})
+	->name('confirmation');
 
-Route::get('/mailable/{id}', function ($id) {
+Route::get('/workshop_certificate/{token}', [CertificateController::class, 'workshop'])
+	->name('certificate.workshop');
+
+Route::get('/event_certificate/{token}', [CertificateController::class, 'general'])
+	->name('certificate.event');
+
+Route::get('/confirmation_mailable/{id}', function ($id) {
 	$attendee = Attendee::find($id);
 	return new AttendeeRegistrationDone($attendee);
-});
+})
+	->middleware('auth');
 
 Route::get('/certificate_mailable/{token}', function ($token) {
 	return new AttendeeCertificatesMail($token);
-});
+})
+	->middleware('auth');
 
-Route::get('/workshop_certificate/{token}', [CertificateController::class, 'workshop'])->name('certificate.workshop');
-
-Route::get('/event_certificate/{token}', [CertificateController::class, 'general'])->name('certificate.event');
 
 Route::get('/payment_images/{image}', function ($image) {
 
@@ -65,6 +70,5 @@ Route::get('/payment_images/{image}', function ($image) {
 	return $response;
 
 	return $file;
-})->middleware('auth');
-
-Route::get('/qr', [QrController::class, 'getQrCode']);
+})
+	->middleware('auth');
