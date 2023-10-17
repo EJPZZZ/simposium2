@@ -169,6 +169,8 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\Filament\AdminPanelProvider::class,
         App\Providers\RouteServiceProvider::class,
+				// Se agrega la clase que servirá para generar los pdf
+				Barryvdh\DomPDF\ServiceProvider::class,
     ])->toArray(),
 
     /*
@@ -184,6 +186,8 @@ return [
 
     'aliases' => Facade::defaultAliases()->merge([
         // 'Example' => App\Facades\Example::class,
+				// Se agrega el alias para la clase de la librería dompdf
+				'PDF' => Barryvdh\DomPDF\Facade::class,
     ])->toArray(),
 
 ];

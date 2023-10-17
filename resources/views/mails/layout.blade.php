@@ -5,9 +5,6 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta http-equiv="X-UA-Compatible" content="ie=edge">
-	{{--
-	<link rel="stylesheet" href="{{ asset('build/assets/app-45c5ea2f.css') }}"> --}}
-	{{-- <script src="https://cdn.tailwindcss.com"></script> --}}
 	<style>
 		html,
 		.body {
@@ -45,6 +42,25 @@
 			font-size: 1rem;
 			line-height: 1.75rem;
 			font-weight: 600;
+		}
+
+		.link {
+			background-color: white;
+			color: black;
+			border: 2px solid black;
+			padding: 10px 20px;
+			text-align: center;
+			text-decoration: none;
+			display: inline-block;
+			border-radius: 1rem;
+			margin-top: 10px;
+			transition: ease-in-out 0.1s;
+		}
+
+		.link:hover,
+		.link:active {
+			background-color: black;
+			color: white;
 		}
 
 		.qr-section {
