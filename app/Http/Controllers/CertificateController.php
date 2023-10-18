@@ -13,7 +13,7 @@ class CertificateController extends Controller
 		$attendee_email = Attendee::verify_token($request->token);
 
 		$attendee = Attendee::where('email', $attendee_email)
-		->first();
+			->first();
 
 		$data = [
 			'name' => $attendee->name,
@@ -24,13 +24,23 @@ class CertificateController extends Controller
 		$pdf = PDF::loadView('certificates.layout', $data);
 		$pdf->setPaper('letter', 'landscape');
 		return $pdf->stream();
-
 	}
 
 	public function general(Request $request)
 	{
 		$attendee_email = Attendee::verify_token($request->token);
 
-		Attendee::where('email', $attendee_email)->first();
+		$attendee = Attendee::where('email', $attendee_email)
+			->first();
+
+		$data = [
+			'name' => $attendee->name,
+			'token' => $attendee->get_certificate_token(),
+		];
+
+		view()->share('data', $data);
+		$pdf = PDF::loadView('certificates.layout', $data);
+		$pdf->setPaper('letter', 'landscape');
+		return $pdf->stream();
 	}
 }

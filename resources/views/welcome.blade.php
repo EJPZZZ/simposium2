@@ -3,7 +3,7 @@
 @section('title', 'Inicio')
 
 @section('content')
-<div class="w-full min-h-screen relative overflow-hidden">
+<section class="w-full min-h-screen relative overflow-hidden">
 	<img class="absolute w-full object-cover object-center z-0 opacity-70"
 		src="{{ asset('storage/images/background-home.jpeg') }}" alt="background">
 	<div class="absolute w-full min-h-screen z-10 flex flex-col justify-between">
@@ -20,5 +20,7 @@
 			<h1 class="text-8xl text-orange-100 text-right font-bold mr-20 mb-20">10° Simposium Regional de Informática</h1>
 		</div>
 	</div>
-</div>
+</section>
+<section class="w-full min-h-screen">
+</section>
 @endsection

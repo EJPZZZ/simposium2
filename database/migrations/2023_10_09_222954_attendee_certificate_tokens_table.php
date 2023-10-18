@@ -22,7 +22,7 @@ return new class extends Migration
 			$table->integer('allowed_times')->default(5);
 			$table->timestamp('last_used_at')->nullable();
 			$table->timestamp('expires_at')->nullable();
-			$table->timestamp('created_at');
+			$table->timestamp('created_at')->nullable();
 		});
 	}
 

@@ -14,7 +14,7 @@
 	<meta name="theme-color" content="#ffffff">
 
 	@livewireStyles
-	@vite('resources/css/app.css')
+	@vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 
 <body class="antialiased bg-neutral-50 dark:bg-neutral-950">

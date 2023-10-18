@@ -35,7 +35,7 @@
 			position: absolute;
 			z-index: 1;
 			font-size: 3rem;
-			top: 40%;
+			top: 44%;
 			left: 50%;
 			transform: translate(-50%, -50%);
 		}
@@ -44,7 +44,7 @@
 			position: absolute;
 			z-index: 1;
 			font-size: 1rem;
-			bottom: 1%;
+			bottom: 5%;
 			right: 5%;
 			transform: translate(0%, -50%);
 		}
