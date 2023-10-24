@@ -19,7 +19,7 @@ class AttendeeRegistrationDone extends Mailable
 	/**
 	 * Create a new message instance.
 	 */
-	public function __construct(protected Attendee $attendee)
+	public function __construct(protected Attendee $attendee, protected $qr)
 	{
 	}
 
@@ -41,10 +41,12 @@ class AttendeeRegistrationDone extends Mailable
 		return new Content(
 			view: 'mails.registration.done',
 			with: [
-				'attendeeName' => $this->attendee->name,
-				'attendeeWorkshop' => $this->attendee->workshop->name,
-				'workshopLocation' => $this->attendee->workshop->location,
-				'attendeeToken' => $this->attendee->get_certificate_token(),
+				'attendee_name' => $this->attendee->name,
+				'attendee_workshop' => $this->attendee->workshop->name,
+				'workshop_location' => $this->attendee->workshop->location,
+				// 'attendee_token' => $this->attendee->get_certificate_token(),
+				'attendee_qr' => $this->qr
+				
 			]
 		);
 	}

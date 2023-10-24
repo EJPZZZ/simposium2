@@ -10,6 +10,7 @@ use App\Models\Workshop;
 use Illuminate\Support\Facades\Mail;
 use Livewire\Attributes\Rule;
 use Livewire\Form;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class AttendeeForm extends Form
 {
@@ -75,8 +76,11 @@ class AttendeeForm extends Form
 
 		$token = $attendee->create_certificate_token();
 
+		$qr = QrCode::format('png')->size(200)->generate($token);
+		$qr = base64_encode($qr);
+
 		Mail::to($attendee->email)
-			->send(new AttendeeRegistrationDone($attendee));
+			->send(new AttendeeRegistrationDone($attendee, $qr));
 			
 		$this->reset();
 
