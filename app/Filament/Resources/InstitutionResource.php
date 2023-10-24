@@ -2,32 +2,34 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\CareerResource\Pages;
-use App\Filament\Resources\CareerResource\RelationManagers;
-use App\Models\Career;
+use App\Filament\Resources\InstitutionResource\Pages;
+use App\Filament\Resources\InstitutionResource\RelationManagers;
+use App\Models\Institution;
 use Filament\Forms;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class CareerResource extends Resource
+class InstitutionResource extends Resource
 {
-	protected static ?string $model = Career::class;
+	protected static ?string $model = Institution::class;
 
-	protected static ?string $title = 'Carreras';
+	protected static ?string $title = 'Instituciones';
 
-	protected static ?string $navigationIcon = 'heroicon-o-academic-cap';
+	protected static ?string $navigationIcon = 'heroicon-o-building-library';
 
-	protected static ?string $navigationLabel = 'Carreras';
+	protected static ?string $navigationLabel = 'Instituciones';
 
-	protected static ?string $modelLabel = 'Carrera';
+	protected static ?string $modelLabel = 'Institución';
 
-	protected static ?string $pluralModelLabel = 'Carreras';
+	protected static ?string $pluralModelLabel = 'Instituciones';
 
-	protected static ?string $heading = 'Carreras';
+	protected static ?string $heading = 'Instituciones';
 
 	protected static ?string $navigationGroup = 'Administración';
 
@@ -35,7 +37,7 @@ class CareerResource extends Resource
 	{
 		return $form
 			->schema([
-				Forms\Components\TextInput::make('name')
+				TextInput::make('name')
 					->label('Nombre')
 					->required()
 					->maxLength(255),
@@ -46,14 +48,14 @@ class CareerResource extends Resource
 	{
 		return $table
 			->columns([
-				Tables\Columns\TextColumn::make('name')
+				TextColumn::make('name')
 					->searchable()
 					->label('Nombre'),
-				Tables\Columns\TextColumn::make('created_at')
+				TextColumn::make('created_at')
 					->dateTime()
 					->sortable()
 					->toggleable(isToggledHiddenByDefault: true),
-				Tables\Columns\TextColumn::make('updated_at')
+				TextColumn::make('updated_at')
 					->dateTime()
 					->sortable()
 					->toggleable(isToggledHiddenByDefault: true),
@@ -81,9 +83,9 @@ class CareerResource extends Resource
 	public static function getPages(): array
 	{
 		return [
-			'index' => Pages\ListCareers::route('/'),
-			'create' => Pages\CreateCareer::route('/create'),
-			'edit' => Pages\EditCareer::route('/{record}/edit'),
+			'index' => Pages\ListInstitutions::route('/'),
+			'create' => Pages\CreateInstitution::route('/create'),
+			'edit' => Pages\EditInstitution::route('/{record}/edit'),
 		];
 	}
 }

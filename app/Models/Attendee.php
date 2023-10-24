@@ -22,6 +22,7 @@ class Attendee extends Model
 		'phone_number',
 		'code',
 		'semester',
+		'institution_id',
 		'career_id',
 		'workshop_id',
 		'gender',
@@ -35,6 +36,11 @@ class Attendee extends Model
 	public function workshop(): BelongsTo
 	{
 		return $this->belongsTo(Workshop::class);
+	}
+
+	public function institution(): BelongsTo
+	{
+		return $this->BelongsTo(Institution::class);
 	}
 
 	public function image(): HasOne
@@ -77,6 +83,7 @@ class Attendee extends Model
 	public function set_token_expiration_date(string $date): void
 	{
 		DB::table('attendee_certificate_tokens')
+			->where('email', '=', $this->email)
 			->update([
 				'expires_at' => $date
 			]);
@@ -85,6 +92,7 @@ class Attendee extends Model
 	public function set_token_allowed_date(string $date): void
 	{
 		DB::table('attendee_certificate_tokens')
+			->where('email', '=', $this->email)
 			->update([
 				'allowed_date' => $date
 			]);
@@ -95,15 +103,22 @@ class Attendee extends Model
 		try {
 			$attendee_data = DB::table('attendee_certificate_tokens')
 				->where('token', '=', $token)
-				->select('allowed_date', 'email')
+				->select('allowed_date', 'expires_at', 'email')
 				->first();
 
-			$formated_date = Carbon::createFromFormat('Y-m-d H:i:s', $attendee_data->allowed_date);
+			$formated_allowed_date = Carbon::createFromFormat('Y-m-d H:i:s', $attendee_data->allowed_date);
+			$formated_expires_at = Carbon::createFromFormat('Y-m-d H:i:s', $attendee_data->expires_at);
 
-			if ($formated_date->gt(Carbon::now())) abort(404);
+			if ($formated_allowed_date->gt(Carbon::now()) or $formated_expires_at->lt(Carbon::now())) abort(404);
 			return $attendee_data->email;
 		} catch (\Throwable $th) {
 			abort(404);
 		}
+	}
+
+	public function verify_validation()
+	{
+		if ($this->validated == 0) return abort(404);
+		return true;
 	}
 }

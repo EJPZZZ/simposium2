@@ -5,6 +5,7 @@ namespace App\Livewire\Forms;
 use App\Mail\AttendeeRegistrationDone;
 use App\Models\Attendee;
 use App\Models\Career;
+use App\Models\Institution;
 use App\Models\Workshop;
 use Illuminate\Support\Facades\Mail;
 use Livewire\Attributes\Rule;
@@ -27,18 +28,14 @@ class AttendeeForm extends Form
 	#[Rule('exists:workshops,name|required',	as: 'taller')]
 	public $workshop = '';
 
-	#[Rule('string|max:255|sometimes|unique:attendees,code',	as: 'matrícula')]
-	#[Rule('required_if:form.type,internal',	as: 'matrícula', message: 'El campo matrícula es obligatorio')]
+	#[Rule('required_if:form.type,internal|string|max:255|sometimes|unique:attendees,code',	as: 'matrícula')]
 	public $code = '';
 
-	#[Rule('exists:careers,name',	as: 'carrera')]
 	#[Rule('required_if:form.type,internal',	as: 'carrera', message: 'El campo carrera es obligatorio')]
-
+	#[Rule('exists:careers,name',	as: 'carrera')]
 	public $career = '';
 
-	#[Rule('max:13|numeric',	as: 'semestre')]
-	#[Rule('required_if:form.type,internal',	as: 'semestre', message: 'El campo semestre es obligatorio')]
-
+	#[Rule('required_if:form.type,internal,numeric|gt:0|lte:13',	as: 'semestre')]
 	public $semester = '';
 
 	#[Rule('required|in:internal,external', as: 'tipo')]
@@ -50,6 +47,9 @@ class AttendeeForm extends Form
 	#[Rule('required|mimes:jpg,jpeg,png|max:2048', as: 'recibo de pago')]
 	public $image_file;
 
+	#[Rule('required', as: 'institucion')]
+	public $institution;
+
 	public function store()
 	{
 		$attendee = Attendee::create([
@@ -60,6 +60,7 @@ class AttendeeForm extends Form
 			'phone_number' => $this->phone_number,
 			'semester' => $this->semester ?: null,
 			'gender' => $this->gender,
+			'institution_id' => Institution::where('name', $this->institution)->first()->id,
 			'career_id' => (Career::where('name', $this->career)->first()->id) ?? null,
 			'workshop_id' => Workshop::where('name', $this->workshop)->first()->id,
 		]);

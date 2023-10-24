@@ -75,6 +75,9 @@ class AttendeeResource extends Resource
 				Select::make('career_id')
 					->relationship(name: 'career', titleAttribute: 'name')
 					->label('Carrera'),
+				Select::make('institution_id')
+					->relationship(name: 'institution', titleAttribute: 'name')
+					->label('Institución'),
 				TextInput::make('semester')
 					->numeric()
 					->minValue(1)
@@ -115,7 +118,13 @@ class AttendeeResource extends Resource
 					->searchable(),
 				TextColumn::make('workshop.name')
 					->label('Taller')
-					->sortable(),
+					->sortable()
+					->searchable(),
+				TextColumn::make('institution.name')
+					->label('Institución')
+					->sortable()
+					->searchable()
+					->toggleable(isToggledHiddenByDefault: true),
 				TextColumn::make('code')
 					->label('Matrícula')
 					->searchable()
@@ -199,12 +208,7 @@ class AttendeeResource extends Resource
 						->deselectRecordsAfterCompletion(),
 					BulkAction::make('Fecha de emisión')
 						->icon('heroicon-m-calendar')
-						->form([
-							DatePicker::make('allowed_date')
-								->label('Fecha de permiso para los links')
-								->required(),
-						])
-						->action(function (array $data, Collection $records) {
+						->action(function (Collection $records, array $data) {
 							foreach ($records as $record) {
 								$record->set_token_allowed_date($data['allowed_date']);
 							}
@@ -214,16 +218,16 @@ class AttendeeResource extends Resource
 								->success()
 								->send();
 						})
+						->form([
+							DatePicker::make('allowed_date')
+								->label('Fecha de permiso para los links')
+								->required(),
+						])
 						->modalWidth('md')
 						->deselectRecordsAfterCompletion(),
 					BulkAction::make('Fecha de expiración')
 						->icon('heroicon-m-calendar')
-						->form([
-							DatePicker::make('expires_at')
-								->label('Fecha de expiración de links')
-								->required(),
-						])
-						->action(function (array $data, Collection $records) {
+						->action(function (Collection $records, array $data) {
 							foreach ($records as $record) {
 								$record->set_token_expiration_date($data['expires_at']);
 							}
@@ -233,6 +237,11 @@ class AttendeeResource extends Resource
 								->success()
 								->send();
 						})
+						->form([
+							DatePicker::make('expires_at')
+								->label('Fecha de expiración de links')
+								->required(),
+						])
 						->modalWidth('md')
 						->deselectRecordsAfterCompletion(),
 				])->label('Certificados')

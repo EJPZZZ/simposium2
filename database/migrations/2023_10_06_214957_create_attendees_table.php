@@ -22,6 +22,7 @@ return new class extends Migration
 			$table->string('gender');
 			$table->foreignId('career_id')->nullable()->constrained('careers')->cascadeOnDelete();
 			$table->foreignId('workshop_id')->nullable()->constrained('workshops')->cascadeOnDelete();
+			$table->foreignId('institution_id')->constrained('institutions')->cascadeOnDelete();
 			$table->boolean('validated')->default(false);
 			$table->timestamp('validated_at')->nullable();
 			$table->string('validated_by')->nullable();

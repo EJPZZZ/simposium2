@@ -15,9 +15,11 @@ class CertificateController extends Controller
 		$attendee = Attendee::where('email', $attendee_email)
 			->first();
 
+		$attendee->verify_validation();
+
 		$data = [
 			'name' => $attendee->name,
-			'token' => $attendee->get_certificate_token(),
+			'token' => $request->token,
 		];
 
 		view()->share('data', $data);
@@ -32,10 +34,11 @@ class CertificateController extends Controller
 
 		$attendee = Attendee::where('email', $attendee_email)
 			->first();
+		$attendee->verify_validation();
 
 		$data = [
 			'name' => $attendee->name,
-			'token' => $attendee->get_certificate_token(),
+			'token' => $request->token,
 		];
 
 		view()->share('data', $data);
