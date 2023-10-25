@@ -19,7 +19,7 @@ class AttendeeRegistrationDone extends Mailable
 	/**
 	 * Create a new message instance.
 	 */
-	public function __construct(protected Attendee $attendee, protected $qr)
+	public function __construct(protected Attendee $attendee, protected $pdf)
 	{
 	}
 
@@ -45,7 +45,7 @@ class AttendeeRegistrationDone extends Mailable
 				'attendee_workshop' => $this->attendee->workshop->name,
 				'workshop_location' => $this->attendee->workshop->location,
 				// 'attendee_token' => $this->attendee->get_certificate_token(),
-				'attendee_qr' => $this->qr
+				// 'attendee_qr' => $this->qr
 				
 			]
 		);
@@ -59,8 +59,8 @@ class AttendeeRegistrationDone extends Mailable
 	public function attachments(): array
 	{
 		return [
-			// Attachment::fromData(fn () => QrCode::format('png')->size(200)->generate($this->attendee->get_certificate_token()), 'qrcode.png')
-			// ->withMime('image/png')
+			Attachment::fromData(fn () => $this->pdf, 'ticket.pdf')
+			->withMime('application/pdf')
 		];
 	}
 }

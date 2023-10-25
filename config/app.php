@@ -171,6 +171,9 @@ return [
         App\Providers\RouteServiceProvider::class,
 				// Se agrega la clase que servirá para generar los pdf
 				Barryvdh\DomPDF\ServiceProvider::class,
+
+				//Se agrega la clase para generar los códigos QR
+				SimpleSoftwareIO\QrCode\QrCodeServiceProvider::class,
     ])->toArray(),
 
     /*
@@ -188,6 +191,8 @@ return [
         // 'Example' => App\Facades\Example::class,
 				// Se agrega el alias para la clase de la librería dompdf
 				'PDF' => Barryvdh\DomPDF\Facade::class,
+				// Se agrega el alias para la clase de la librería qrcode
+				'QrCode' => SimpleSoftwareIO\QrCode\Facades\QrCode::class,
     ])->toArray(),
 
 ];

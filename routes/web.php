@@ -44,10 +44,15 @@ Route::get('/event_certificate/{token}', [CertificateController::class, 'general
 
 Route::get('/confirmation_mailable/{id}', function ($id) {
 	$attendee = Attendee::find($id);
-	$qr = QrCode::format('png')->size(300)->generate('hola mundo');
-	$qr = base64_encode($qr);
+	$qrcode = base64_encode(QrCode::format('png')->size(200)->generate('hola mundo'));
 
-	return new AttendeeRegistrationDone($attendee, $qr);
+	return view('tickets.qr_confirmation', [
+		'title' => 'test',
+		'qrcode'=> $qrcode,
+	]);
+	// $qr = base64_encode($qrcode);
+
+	// return new AttendeeRegistrationDone($attendee, $qr);
 })
 	->middleware('auth');
 

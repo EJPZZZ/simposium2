@@ -7,8 +7,9 @@
 	<meta http-equiv="X-UA-Compatible" content="ie=edge">
 	<style>
 		body {
-			font-family: -apple-system, BlinkMacSystemFont, " Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans"
-				, "Liberation Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+			/* font-family: -apple-system, BlinkMacSystemFont, " Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans"
+				, "Liberation Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"; */
+			font-family: 'Roboto', sans-serif;
 		}
 	</style>
 </head>
@@ -22,12 +23,12 @@
 		<p>
 			Querid@ participante, ya puedes descargar los certificados de participación del evento en los siguientes links:
 		</p>
-		<div style="margin-top: 1rem;">
+		<div style="margin-top: 10px;">
 			<label>Certificado del taller:</label><br>
 			<a style="background-color: white; color: black; border: 2px solid black; padding: 10px 20px; text-align: center; text-decoration: none;	display: inline-block; border-radius: 1rem;	margin-top: 10px;	transition: ease-in-out 0.1s;"
 				href="{{ route('certificate.workshop', $token) }}">Obtener certificado</a>
 		</div>
-		<div style="margin-top: 1rem">
+		<div style="margin-top: 10px">
 			<label>Certificado del evento:</label><br>
 			<a style="background-color: white;	color: black; border: 2px solid black; padding: 10px 20px; text-align: center; text-decoration: none;	display: inline-block; border-radius: 1rem;	margin-top: 10px;	transition: ease-in-out 0.1s;"
 				href="{{ route('certificate.event', $token) }}">Obtener certificado</a>

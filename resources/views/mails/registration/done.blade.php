@@ -7,8 +7,9 @@
 	<meta http-equiv="X-UA-Compatible" content="ie=edge">
 	<style>
 		body {
-			font-family: -apple-system, BlinkMacSystemFont, " Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans"
-				, "Liberation Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+			/* font-family: -apple-system, BlinkMacSystemFont, " Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans"
+				, "Liberation Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"; */
+			font-family: 'Roboto', sans-serif;
 		}
 	</style>
 </head>
@@ -19,25 +20,23 @@
 		<h1 style="margin-bottom: 1rem;	font-size: 1.5rem; line-height: 2rem;	font-weight: 600;">
 			10° Simposium Regional de Informática
 		</h1>
-		<p>
+		<p style="margin: 10px 0 10px 0;">
 			<u>¡{{ $attendee_name }}</u> tu registro ha sido completado!<br>El taller que seleccionaste fue <u>{{
 				$attendee_workshop }}</u>, el cual se realizará de manera presencial en el <u>{{
 				$workshop_location }}</u>, en las instalaciones del <strong>Tecnológico Nacional de México Campus de la Región
 				Sierra</strong>.
 		</p>
-		<p style="margin-top: 1rem; font-size: 1rem; line-height: 1.75rem; font-weight: 600;">
+		<p style="margin: 10px 0 10px 0; font-size: 1rem; line-height: 1.75rem; font-weight: 600;">
 			¡Gracias por participar!
 		</p>
-		<p style="margin-top: 8px">
+		<p style="margin: 10px 0 10px 0;">
 			Te enviamos el código con el cuál tendrás acceso a las conferencias presenciales.
 		</p>
-		<div style="display: flex; margin-top: 2rem; justify-content: center;	align-items: center;">
-			<img src="data:image/png;base64,{{  $attendee_qr  }}" alt="qr-code">
-			{{-- <img
-				src="{{ $message->embedData(QrCode::format('png')->size(200)->encoding('UTF-8')->generate(1), 'QrCode.png', 'image/png') }}">
-			--}}
+		{{-- <div style="display: flex; margin: 6px 0 6px 0; justify-content: center;	align-items: center;"> --}}
+			{{-- <img style=“display:block” src="data:image/png;base64,{{  $attendee_qr  }}" alt="qr-code"> --}}
+			{{-- <img src="{{ $message->embed(QrCode::format('png')->size(200)->encoding('UTF-8')->generate(1), 'QrCode.png', 'image/png') }}"> --}}
 			{{-- <img src="{{ $message->embedData($attendee_qr, 'nameForAttachment.png') }}" alt=""> --}}
-		</div>
+		{{-- </div> --}}
 	</div>
 </body>
 

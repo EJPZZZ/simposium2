@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Mail;
 use Livewire\Attributes\Rule;
 use Livewire\Form;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
+use PDF;
 
 class AttendeeForm extends Form
 {
@@ -76,11 +77,19 @@ class AttendeeForm extends Form
 
 		$token = $attendee->create_certificate_token();
 
-		$qr = QrCode::format('png')->size(300)->generate($token);
-		$qr = base64_encode($qr);
+		$qrcode = base64_encode(QrCode::format('png')->size(300)->generate($token));
+
+		$data = [
+			'title' => 'Ticket QR - SRI',
+			'qrcode' => $qrcode,	
+		];
+
+		$pdf = PDF::loadView('tickets.qr_confirmation', $data);
+		$pdf->setPaper('letter', 'portrait');
+		$pdf->render();
 
 		Mail::to($attendee->email)
-			->send(new AttendeeRegistrationDone($attendee, $qr));
+			->send(new AttendeeRegistrationDone($attendee, $pdf->output()));
 			
 		$this->reset();
 
