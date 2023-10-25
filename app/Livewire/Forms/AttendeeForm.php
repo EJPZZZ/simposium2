@@ -76,7 +76,7 @@ class AttendeeForm extends Form
 
 		$token = $attendee->create_certificate_token();
 
-		$qr = QrCode::format('png')->size(200)->generate($token);
+		$qr = QrCode::format('png')->size(300)->generate($token);
 		$qr = base64_encode($qr);
 
 		Mail::to($attendee->email)

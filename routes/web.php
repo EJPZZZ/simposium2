@@ -7,6 +7,7 @@ use App\Models\Attendee;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 /*
 |--------------------------------------------------------------------------
@@ -43,7 +44,10 @@ Route::get('/event_certificate/{token}', [CertificateController::class, 'general
 
 Route::get('/confirmation_mailable/{id}', function ($id) {
 	$attendee = Attendee::find($id);
-	return new AttendeeRegistrationDone($attendee);
+	$qr = QrCode::format('png')->size(300)->generate('hola mundo');
+	$qr = base64_encode($qr);
+
+	return new AttendeeRegistrationDone($attendee, $qr);
 })
 	->middleware('auth');
 

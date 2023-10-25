@@ -23,7 +23,7 @@
 			border-radius: 0.75rem;
 			width: 100%;
 			text-align: center;
-			background-color: whitesmoke;
+			background-color: #e0e0e0;
 
 			@media (min-width: 640px) {
 				width: 50%;
@@ -72,8 +72,10 @@
 	</style>
 </head>
 
-<body class="antialiased">
-	@yield('content')
+<body class="body">
+	<div class="container">
+		@yield('content')
+	</div>
 </body>
 
 </html>
