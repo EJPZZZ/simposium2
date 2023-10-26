@@ -5,16 +5,16 @@
 		<div class="flex flex-col lg:flex-row gap-4 mt-2">
 			<div class="w-full lg:w-2/3">
 				<label class="block mb-1 px-3 text-sm font-medium text-neutral-900 dark:text-white" for="name">Nombre*</label>
-				<input class="block w-full px-4 py-2 rounded-full ring-0 bg-neutral-800 text-sm focus text-neutral-50" type="text"
-					wire:model="form.name" placeholder="Nombre" id="name" autofocus required>
+				<input class="block w-full px-4 py-2 rounded-full ring-0 bg-neutral-800 text-sm focus text-neutral-50"
+					type="text" wire:model="form.name" placeholder="Nombre" id="name" required>
 				@error('form.name')
 				<span wire:transition class="text-sm text-red-600">{{ $message }}</span>
 				@enderror
 			</div>
 			<div class="w-full lg:w-1/3">
 				<label class="block mb-1 px-3 text-sm font-medium text-neutral-900 dark:text-white" for="curp">CURP*</label>
-				<input class="block w-full px-4 py-2 rounded-full ring-0 bg-neutral-800 text-sm focus text-neutral-50" type="text"
-					wire:model="form.curp" placeholder="CURP" id="curp" required>
+				<input class="block w-full px-4 py-2 rounded-full ring-0 bg-neutral-800 text-sm focus text-neutral-50"
+					type="text" wire:model="form.curp" placeholder="CURP" id="curp" required>
 				@error('form.curp')
 				<span wire:transition class="text-sm text-red-600">{{ $message }}</span>
 				@enderror
@@ -24,8 +24,8 @@
 			<div class="w-full lg:w-2/3">
 				<label class="block mb-1 px-3 text-sm font-medium text-neutral-900 dark:text-white" for="email">Correo
 					Electrónico*</label>
-				<input class="block w-full px-4 py-2 rounded-full ring-0 bg-neutral-800 text-sm" type="email" wire:model="form.email"
-					placeholder="Correo Electrónico" id="email" required>
+				<input class="block w-full px-4 py-2 rounded-full ring-0 bg-neutral-800 text-sm" type="email"
+					wire:model="form.email" placeholder="Correo Electrónico" id="email" required>
 				@error('form.email')
 				<span wire:transition class="text-sm text-red-600">{{ $message }}</span>
 				@enderror
@@ -34,7 +34,7 @@
 				<label class="block mb-1 px-3 text-sm font-medium text-neutral-900 dark:text-white" for="phone_number">Número de
 					teléfono</label>
 				<input class="block w-full px-4 py-2 rounded-full ring-0 bg-neutral-800 text-sm" type="text"
-					wire:model="form.phone_number" placeholder="Número de teléfono" id="phone_number" required>
+					wire:model="form.phone_number" placeholder="Número de teléfono" id="phone_number">
 				@error('form.phone_number')
 				<span wire:transition class="text-sm text-red-600">{{ $message }}</span>
 				@enderror
@@ -92,7 +92,8 @@
 				@enderror
 			</div>
 			<div class="w-1/2">
-				<label class="block mb-1 px-3 text-sm font-medium text-neutral-900 dark:text-white" for="semester">Semestre</label>
+				<label class="block mb-1 px-3 text-sm font-medium text-neutral-900 dark:text-white"
+					for="semester">Semestre</label>
 				<input class="block w-full px-4 py-2 rounded-full ring-0 bg-neutral-800 text-sm" type="number"
 					wire:model="form.semester" placeholder="Semestre" min="1" max="13" id="semester" required>
 				@error('form.semester')
@@ -137,9 +138,8 @@
 			<label class="block mb-1 px-3 text-sm font-medium text-neutral-900 dark:text-white" for="image_file">Recibo de
 				pago*</label>
 			<input wire:model="form.image_file"
-				class="block w-full text-sm text-gray-400 rounded-full cursor-pointer bg-neutral-800 dark:placeholder-neutral-400 p-2 file:mr-4 file:py-1 file:px-4
-				file:rounded-full file:border-0	file:text-sm file:font-semibold file:bg-neutral-100 file:text-neutral-800 hover:file:bg-neutral-300" id="image_file"
-				type="file" accept="image/jpg,image/jpeg,image/png" required>
+				class="block w-full text-sm text-gray-400 rounded-full cursor-pointer bg-neutral-800 dark:placeholder-neutral-400 p-2 file:mr-4 file:py-1 file:px-4 file:rounded-full file:border-0	file:text-sm file:font-semibold file:bg-neutral-100 file:text-neutral-800 hover:file:bg-neutral-300"
+				id="image_file" type="file" accept="image/jpg,image/jpeg,image/png" required>
 			<div wire:loading wire:target="form.image_file" class="absolute right-2 top-1/2">
 				<img class="h-6" src="{{ asset('storage/images/rolling.gif') }}" alt="">
 			</div>
@@ -160,4 +160,23 @@
 			</button>
 		</div>
 	</form>
+
+	@if ($showAdvertisingModal)
+	<div wire:click.prevent="closeAdvertisingModal"	class="bg-neutral-950 bg-opacity-70 absolute z-20 min-h-full w-full top-0 left-0 flex items-center justify-center">
+	</div>
+	<div class="absolute bg-neutral-200 rounded-lg w-full md:w-1/3 p-8 text-center z-30 top-0 left-0 translate-y-2/3 md:translate-x-full md:translate-y-full">
+		<h1 class="uppercase font-bold text-red-800 text-xl">aviso importante</h1>
+		<p class="text-neutral-950 mt-4">
+			Debes recordar, que los datos que introduzcas en el formulario se usarán para generar las constancias
+			de participación. <strong>Recuerda verificarlos antes de confirmar el registro</strong>.
+		</p>
+		<p class="text-neutral-950 mt-4">
+			El archivo que deberás cargar será una foto del <strong>recibo de pago</strong> canjeado en el área de cajas de
+			la institución.
+		</p>
+		<button wire:click.prevent="closeAdvertisingModal"
+			class="bg-neutral-950 rounded-lg text-neutral-50 px-4 py-2 mt-4 hover:bg-neutral-700 transition duration-200 ease-in-out"
+			autofocus>Aceptar</button>
+	</div>
+	@endif
 </div>

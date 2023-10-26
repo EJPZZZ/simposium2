@@ -22,6 +22,8 @@ class AttendeeRegistration extends Component
 
 	public $institutions = [];
 
+	public $showAdvertisingModal = true;
+
 	public function mount()
 	{
 		$this->careers = Career::select('name')
@@ -52,6 +54,11 @@ class AttendeeRegistration extends Component
 	public function typeChange()
 	{
 		($this->form->type == 'internal') ?	$this->form->institution = "TecNM Campus de la Región Sierra" : $this->form->institution = '';
+	}
+
+	public function closeAdvertisingModal()
+	{
+		$this->showAdvertisingModal = false;
 	}
 
 	public function render()

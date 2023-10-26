@@ -44,13 +44,24 @@ Route::get('/event_certificate/{token}', [CertificateController::class, 'general
 
 Route::get('/confirmation_mailable/{id}', function ($id) {
 	$attendee = Attendee::find($id);
-	$qrcode = base64_encode(QrCode::format('png')->size(200)->generate('hola mundo'));
 
-	return view('tickets.qr_confirmation', [
-		'title' => 'test',
-		'qrcode'=> $qrcode,
-	]);
-	// $qr = base64_encode($qrcode);
+	// dd(Storage::get('public/images/logo.png'));
+	
+	$qrcode = base64_encode(QrCode::format('png')->size(200)->style('round')->mergeString(Storage::get('public/images/logo_fondo.png'), 0.4)->errorCorrection('H')->generate('hola mundo'));
+
+	$data = [
+		'title' => 'Ticket QR - SRI',
+		'qrcode' => $qrcode,	
+	];
+
+	$pdf = PDF::loadView('tickets.qr_confirmation', $data);
+	$pdf->setPaper('letter', 'portrait');
+	return $pdf->stream();
+
+	// return view('tickets.qr_confirmation', [
+	// 	'title' => 'test',
+	// 	'qrcode'=> $qrcode,
+	// ]);
 
 	// return new AttendeeRegistrationDone($attendee, $qr);
 })

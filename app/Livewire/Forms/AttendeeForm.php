@@ -15,7 +15,7 @@ use PDF;
 
 class AttendeeForm extends Form
 {
-	#[Rule('string|max:18|unique:attendees,curp|required',	as: 'curp')]
+	#[Rule('string|size:18|unique:attendees,curp|required',	as: 'curp')]
 	public $curp = '';
 
 	#[Rule('string|max:255|required',	as: 'nombre')]
