@@ -8,6 +8,7 @@ use App\Models\Career;
 use App\Models\Institution;
 use App\Models\Workshop;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Storage;
 use Livewire\Attributes\Rule;
 use Livewire\Form;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
@@ -77,7 +78,7 @@ class AttendeeForm extends Form
 
 		$token = $attendee->create_certificate_token();
 
-		$qrcode = base64_encode(QrCode::format('png')->size(300)->generate($token));
+		$qrcode = base64_encode(QrCode::format('png')->size(200)->style('round')->mergeString(Storage::get('public/images/logo_fondo.png'), 0.4)->errorCorrection('H')->generate($token));
 
 		$data = [
 			'title' => 'Ticket QR - SRI',
